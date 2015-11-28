@@ -24,7 +24,6 @@ namespace UnityHeapEx
 
         public void Dump()
         {
-			GC.Collect();
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
             var gameAssembly = assemblies.Single(a => a.FullName.Contains("Assembly-CSharp,"));
             var allScripts = UnityEngine.Object.FindObjectsOfType(typeof(MonoBehaviour));
