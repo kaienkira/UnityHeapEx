@@ -177,10 +177,11 @@ namespace UnityHeapEx
         private void WriteUnityObjectData( string depth, Object uo, bool seen )
         {
 			// shows some additional info on UnityObjects
-            writer.WriteLine( depth + "<unityObject type=\"{0}\" name=\"{1}\" seen=\"{2}\"/>",
+            writer.WriteLine( depth + "<unityObject type=\"{0}\" name=\"{1}\" seen=\"{2}\" hash=\"{3}\"/>",
                               SecurityElement.Escape( uo.GetType().GetFormattedName() ),
                               SecurityElement.Escape( uo ? uo.name : "--missing reference--" ),
-                              seen );
+                              seen,
+                              uo ? uo.GetHashCode().ToString() : "0");
             // todo we can show referenced assets for renderers, materials, audiosources etc
         }
 		
@@ -197,11 +198,11 @@ namespace UnityHeapEx
             int res = 0;
             var ftype = v==null?null:v.GetType();
 
-            writer.WriteLine( depth + "<field type=\"{0}\" name=\"{1}\" runtimetype=\"{2}\">",
+            writer.WriteLine( depth + "<field type=\"{0}\" name=\"{1}\" runtimetype=\"{2}\" hash=\"{3}\">",
                 SecurityElement.Escape( fieldInfo.FieldType.GetFormattedName() ), 
                 SecurityElement.Escape( fieldInfo.Name ),
-                SecurityElement.Escape( v==null?"-null-":ftype.GetFormattedName())
-                );
+                SecurityElement.Escape( v==null?"-null-":ftype.GetFormattedName()),
+                v==null?"0":v.GetHashCode().ToString());
 
             if(v==null)
             {
@@ -259,7 +260,9 @@ namespace UnityHeapEx
                         {
                             if( item != null )
                             {
-                                writer.WriteLine( depth + "  <item type=\"{0}\">", SecurityElement.Escape( item.GetType().GetFormattedName() ) );
+                                writer.WriteLine( depth + "  <item type=\"{0}\" hash=\"{1}\">",
+                                    SecurityElement.Escape( item.GetType().GetFormattedName() ),
+                                    item.GetHashCode().ToString());
                                 res += GatherFromRootRecursively( item, depth + "    " );
                                 writer.WriteLine( depth + "  </item>");
                             }
